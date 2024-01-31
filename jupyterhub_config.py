@@ -121,7 +121,7 @@ else:
 notebook_dir = '/home/jovyan'
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.volumes = {
-    f'{get_env("USER_BASE_DIR")}-{{username}}': "/home/jovyan/work",
+    f'jupyter-volume-{{username}}': "/home/jovyan/work",
     get_env('SHARED_DIR'): "/home/jovyan/public",
 }
 
