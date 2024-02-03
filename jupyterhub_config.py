@@ -19,7 +19,7 @@ def get_env(
         raise EnvironmentError('Missing environment variable: ' + name)
     var_type = parse_bool if var_type is bool else var_type
     try:
-        return var_type(get_env(name, default=default))
+        return var_type(os.getenv(name, default=default))
     except ValueError:
         raise EnvironmentError(
             'Invalid value for environment variable: ' + name
