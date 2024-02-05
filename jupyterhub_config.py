@@ -104,7 +104,7 @@ if (
     c.JupyterHub.authenticator_class.scope = get_env('SCOPE').split(',')
 
     c.Authenticator.add_user_cmd = ['adduser', '-q', '--gecos', '""', '--disabled-password', '--force-badname']
-    c.Authenticator.whitelist = set(get_env('AUTHORIZED_USERS').split(','))
+    c.Authenticator.allowed_users = set(get_env('AUTHORIZED_USERS').split(','))
     c.Authenticator.admin_users = set(get_env('ADMIN_USERS').split(','))
 
 elif (
@@ -125,7 +125,7 @@ elif (
     c.LocalGoogleOAuthenticator.client_secret = _read_secret('GOOGLE_SECRET')
 
     c.Authenticator.add_user_cmd = ['adduser', '-q', '--gecos', '""', '--disabled-password', '--force-badname']
-    c.Authenticator.whitelist = set(get_env('AUTHORIZED_USERS').split(','))
+    c.Authenticator.allowed_users = set(get_env('AUTHORIZED_USERS').split(','))
     c.Authenticator.admin_users = set(get_env('ADMIN_USERS').split(','))
 
 
