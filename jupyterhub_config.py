@@ -26,6 +26,20 @@ def get_env(
         )
 
 
+
+def _read_secret(secret_name: str, default: [str | None] = None):
+    try:
+        f = open('/run/secrets/' + secret_name, 'r', encoding='utf-8')
+    except EnvironmentError:
+        if default is None:
+            return get_env(secret_name)
+        return default
+    else:
+        with f:
+            return f.readline().strip()
+
+
+
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 c.DockerSpawner.image = get_env('DOCKER_JUPYTER_IMAGE')
 c.DockerSpawner.network_name = get_env('DOCKER_NETWORK_NAME')
@@ -70,7 +84,7 @@ c.JupyterHub.services = [
 
 if (
         get_env('CLIENT_ID')
-        and get_env('CLIENT_SECRET')
+        and _read_secret('CLIENT_SECRET')
 ):
     c.JupyterHub.authenticator_class = GenericOAuthenticator
     c.JupyterHub.authenticator_class.login_service = 'Jaguar in the Jupyter'
@@ -78,7 +92,7 @@ if (
     c.JupyterHub.authenticator_class.hosted_domain = get_env('HOSTED_DOMAINS').split(',')
 
     c.JupyterHub.authenticator_class.client_id = get_env('CLIENT_ID')
-    c.JupyterHub.authenticator_class.client_secret = get_env('CLIENT_SECRET')
+    c.JupyterHub.authenticator_class.client_secret = _read_secret('CLIENT_SECRET')
 
     c.JupyterHub.authenticator_class.oauth_callback_url = get_env('REDIRECT_URL')
     c.JupyterHub.authenticator_class.authorize_url = get_env('AUTHORIZE_URL')
@@ -93,7 +107,7 @@ if (
 
 elif (
         get_env('GOOGLE_CLIENT_ID')
-        and get_env('GOOGLE_SECRET')
+        and _read_secret('GOOGLE_SECRET')
 ):
     c.JupyterHub.authenticator_class = LocalGoogleOAuthenticator
     c.JupyterHub.authenticator_class.login_service = 'Jaguar in the Jupyter'
@@ -106,7 +120,7 @@ elif (
 
     c.LocalGoogleOAuthenticator.oauth_callback_url = get_env('GOOGLE_OAUTH_CALLBACK')
     c.LocalGoogleOAuthenticator.client_id = get_env('GOOGLE_CLIENT_ID')
-    c.LocalGoogleOAuthenticator.client_secret = get_env('GOOGLE_SECRET')
+    c.LocalGoogleOAuthenticator.client_secret = _read_secret('GOOGLE_SECRET')
 
     c.Authenticator.add_user_cmd = ['adduser', '-q', '--gecos', '""', '--disabled-password', '--force-badname']
     c.Authenticator.whitelist = set(get_env('AUTHORIZED_USERS').split(','))
