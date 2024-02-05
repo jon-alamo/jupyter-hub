@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 from oauthenticator.google import LocalGoogleOAuthenticator
 from oauthenticator.generic import GenericOAuthenticator
 
@@ -32,6 +33,7 @@ def _read_secret(secret_name: str, default: [str | None] = None):
         f = open('/run/secrets/' + secret_name, 'r', encoding='utf-8')
     except EnvironmentError:
         if default is None:
+            logging.warning(f'No secret found for {secret_name}')
             return get_env(secret_name)
         return default
     else:
