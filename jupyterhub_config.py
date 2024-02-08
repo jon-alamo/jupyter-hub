@@ -47,6 +47,8 @@ c.DockerSpawner.image = get_env('DOCKER_JUPYTER_IMAGE')
 c.DockerSpawner.network_name = get_env('DOCKER_NETWORK_NAME')
 c.JupyterHub.hub_ip = get_env('HUB_IP')
 
+c.JupyterHub.allow_named_servers = True
+
 # Redirect to JupyterLab, instead of the plain Jupyter notebook
 c.Spawner.default_url = '/lab'
 
@@ -91,6 +93,8 @@ if (
     c.JupyterHub.authenticator_class = GenericOAuthenticator
     c.JupyterHub.authenticator_class.login_service = 'Jaguar in the Jupyter'
     c.JupyterHub.authenticator_class.create_system_users = True
+    c.GenericOAuthenticator.allow_existing_users = True
+
     c.JupyterHub.authenticator_class.hosted_domain = get_env('HOSTED_DOMAINS').split(',')
 
     c.JupyterHub.authenticator_class.client_id = get_env('CLIENT_ID')
@@ -133,12 +137,13 @@ else:
     # Admin users
     c.Authenticator.admin_users = set(get_env('ADMIN_USERS').split(','))
 
-
+media_root = get_env('HOST_MEDIA_ROOT')
 notebook_dir = '/home/jovyan'
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.volumes = {
     f'jupyter-volume-{{username}}': "/home/jovyan/work",
     get_env('SHARED_DIR'): "/home/jovyan/public",
+    f'{{media_root}}/{{username}}': '/home/jovyan/work/media',
 }
 
 c.DockerSpawner.environment = {
