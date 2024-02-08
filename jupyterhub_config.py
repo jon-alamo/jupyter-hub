@@ -143,7 +143,7 @@ c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.volumes = {
     f'jupyter-volume-{{username}}': "/home/jovyan/work",
     get_env('SHARED_DIR'): "/home/jovyan/public",
-    f'{{media_root}}/{{username}}': '/home/jovyan/work/media',
+    f'{media_root}/{{username}}': '/home/jovyan/work/media',
 }
 
 c.DockerSpawner.environment = {
